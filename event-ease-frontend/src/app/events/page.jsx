@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../../contexts/AuthContext';
 import io from 'socket.io-client';
-import Layout from '../components/Layout';
+import Layout from '../(withCommonLayout)/layout';
 
 export default function Events() {
   const [events, setEvents] = useState([]);

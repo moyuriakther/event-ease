@@ -18,4 +18,5 @@ export const apiSlice = createApi({
     },
   }),
   endpoints: (builder) => ({}),
+  tagTypes: ["Event"],
 });

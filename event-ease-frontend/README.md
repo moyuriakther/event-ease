@@ -37,5 +37,4 @@
 
 -API Documentation:
 
-- Base API: https://api.razzakfashion.com
-- Example Query: https://api.razzakfashion.com/?paginate=5&search=Kiehn
+- Postman Collection: https://documenter.getpostman.com/view/25490019/2sAYQXnsRu

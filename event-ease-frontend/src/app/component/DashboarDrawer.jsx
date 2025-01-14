@@ -1,11 +1,17 @@
+"use client";
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {logoutUser} from "../store/actions/logoutUser"
 
 export default function DashboardDrawer({ children }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [mounted, setMounted] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const router = useRouter();
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -13,9 +19,10 @@ export default function DashboardDrawer({ children }) {
   const handleLogOut = () => {
     logoutUser(router);
   };
+  if (!mounted) return null;
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-100">
       {/* Mobile Sidebar Toggle Button */}
       <button
         onClick={toggleSidebar}
@@ -30,10 +37,10 @@ export default function DashboardDrawer({ children }) {
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="p-4 text-lg font-bold text-center border-b text-gray-700">Event Ease</div>
+        <div className="text-lg font-bold text-center border-b text-gray-700">Welcome to Dashboard</div>
         <nav className="flex flex-col mt-4 space-y-2">
           <Link href="/dashboard" className="px-4 py-2 text-gray-700 hover:bg-gray-200">
-            Home
+            Events
           </Link>
           <Link href="/dashboard/create-event" className="px-4 py-2 text-gray-700 hover:bg-gray-200">
             Create Event
@@ -52,7 +59,7 @@ export default function DashboardDrawer({ children }) {
         </header>
 
         {/* Content */}
-        <main className="p-4">{children}</main>
+        <main className="flex-1 overflow-auto p-4 md:p-6">{children}</main>
       </div>
 
       {/* Overlay for Sidebar on Mobile */}

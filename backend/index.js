@@ -23,6 +23,7 @@ const io = new Server(server, {
 });
 
 // middle wires
+app.use(express.json());
 app.use(
   cors({
     credentials: true,
@@ -31,8 +32,7 @@ app.use(
     ],
   })
 );
-app.use(express.json());
-app.use(cors());
+
 
 // Share the io instance with routes
 app.use((req, res, next) => {
@@ -56,7 +56,7 @@ io.on("connection", (socket) => {
   });
 });
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
  

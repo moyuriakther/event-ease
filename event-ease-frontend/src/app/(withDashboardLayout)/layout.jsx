@@ -2,15 +2,31 @@
 
 import { useRouter } from "next/navigation";
 import DashboardDrawer from "../component/DashboarDrawer";
-import { getUserInfo, isLoggedIn } from "../store/authServices";
+import { getUserInfo } from "../store/authServices";
+// import { Toaster } from "sonner";
+import { SocketProvider } from "../../contexts/SocketContext";
+import { useEffect, useState } from "react";
 
 const DashboardLayout = ({ children }) => {
-    console.log(getUserInfo())
+ const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+
+ useEffect(() => {
     if (!getUserInfo()) {
-      router.push(`/login`);
+      router.push('/login');
+    } else {
+      setIsLoading(false);
     }
-  return <DashboardDrawer>{children}</DashboardDrawer>;
+  }, [router]);
+
+  if (isLoading) {
+    return null;
+  }
+
+  return(<SocketProvider>
+            <DashboardDrawer>{children}</DashboardDrawer>
+            {/* <Toaster position="top-right" /> */}
+        </SocketProvider> );
 };
 
 export default DashboardLayout;

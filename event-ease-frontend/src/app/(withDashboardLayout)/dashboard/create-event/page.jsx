@@ -1,29 +1,55 @@
 "use client";
 
 import { useState } from "react";
+import {useCreateEventMutation} from "../../../store/eventApi"
+import { toast } from "sonner";
+import { useSocket } from "../../../../contexts/SocketContext";
+import { useRouter } from "next/navigation";
 
 export default function EventForm() {
+      const router = useRouter()
+    const socket = useSocket();
+    const [createEvent, {isLoading, isError, isSuccess, data}] = useCreateEventMutation()
   const [formData, setFormData] = useState({
-    eventName: "",
+    name: "",
     date: "",
     location: "",
-    maxAttendees: "",
+    maxAttendees: 0,
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: name === "maxAttendees" ? parseInt(value) : value,
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // API call to create or register for an event
-    console.log("Form Data Submitted:", formData);
+   try {
+      const result = await createEvent(formData).unwrap();
+      toast.success("Event Created Successfully");
+      // Emit socket event for new event creation
+      if (socket) {
+        socket.emit("event_created", result);
+      }
+      // Reset form
+      setFormData({
+        name: "",
+        date: "",
+        location: "",
+        maxAttendees: 0,
+      });
+       router.push('/dashboard');
+    } catch (error) {
+      toast.error("Failed to create event");
+    }
   };
-
+    if(isSuccess && data){
+        toast.success("Event Created Successfully")
+    }
   return (
     <div className="px-4 py-6 sm:px-6 lg:px-8 text-gray-700">
       <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
@@ -42,8 +68,8 @@ export default function EventForm() {
             <input
               type="text"
               id="eventName"
-              name="eventName"
-              value={formData.eventName}
+              name="name"
+              value={formData.name}
               onChange={handleInputChange}
               placeholder="Enter event name"
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"

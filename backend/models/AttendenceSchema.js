@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+
 const AttendenceSchema = new mongoose.Schema({
   userId:{
       type: mongoose.Schema.Types.ObjectId,
