@@ -20,7 +20,7 @@ eventRouter.post("/", protect, asyncHandler(async (req, res) => {
     });
     console.log({event})
     await event.save();
-    // io.emit("event_created", event);
+    io.emit("event_created", event); // event creation notification
     res.status(201).json(event);
   } catch (err) {
     res.status(400).json({ error: "Error creating event" });
@@ -35,6 +35,7 @@ eventRouter.get("/", protect, asyncHandler(async (req, res) => {
 eventRouter.post("/:id/register", protect, asyncHandler(async (req, res) => {
   const { id } = req.params;
   const event = await Event.findById(id);
+  console.log({event})
   if (!event) return res.status(404).send("Event not found");
 
   const attendeesCount = await Attendence.countDocuments({ eventId: event._id });
@@ -43,7 +44,7 @@ eventRouter.post("/:id/register", protect, asyncHandler(async (req, res) => {
   try {
     const attendee = new Attendence({ userId: req.user.id, eventId: event._id });
     await attendee.save();
-    // io.emit("attendee_registered", attendee);
+    io.emit("attendee_registered", attendee); //attendee registration notification
     res.status(201).json(attendee);
   } catch (err) {
     res.status(400).json({ error: "Error registering for event" });

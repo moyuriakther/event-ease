@@ -2,9 +2,29 @@ const express = require("express");
 const asyncHandler = require("express-async-handler");
 const generateToken = require("../utils/generateToken");
 const User = require("../Models/UserModel");
+const { protect } = require("../middleware/Auth");
 
 
 const userRouter = express.Router();
+
+// get user profile
+userRouter.get(
+  "/me",
+  protect,
+  asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    if (user) {
+      res.json({
+        _id: user._id,
+        email: user.email,
+        createdAt: user.createdAt,
+      });
+    } else {
+      res.status(404);
+      throw new Error("User Not Found");
+    }
+  })
+);
 
 // login
 userRouter.post(
@@ -53,4 +73,5 @@ userRouter.post(
     }
   })
 );
+
 module.exports = userRouter;
